@@ -27,6 +27,34 @@
                 res.status(500).json(err);
             })
     },
+    // adding a friend to a user
+    addUserFriend(req, res) {
+        User.findOneAndUpdate(
+            { _id: req.params.userId },
+            { $addToSet: { friends: req.body }},
+            { runValidators: true, new: true }
+        )
+            .then((user) => 
+            !user
+            ? res.status(404).json({ message: 'User Not Found' })
+            : res.json(user)
+            )
+            .catch((err) => res.status(500).json(err))
+    },
+    // delete a user's friend 
+    deleteUserFriend(req, res) {
+        User.findOneAndDelete(
+            { _id: req.params.userId },
+            { $pull: { friends: req.params.friends.ObjectId }},
+            { new: true }
+        )
+            .then((user) => 
+                !user
+                ? res.status(404).json({ message: 'User Not Found' })
+                : res.json({ message: 'Friend Deleted' })
+            )
+            .catch((err) => res.status(500).json(err))
+    },
     // creating a new user
     createUser(req, res) {
         User.create(req.body)
@@ -47,3 +75,4 @@
             )
             .catch((err) => res.status(500).json(err))
     }
+}
