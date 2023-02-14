@@ -2,7 +2,7 @@
  const { User, Thought } = require('../models');
 
  module.exports = {
-    // geting all users 
+    // getting all users 
     getUser(req, res) {
         User.find({})
             .then((user) => res.json(user))
@@ -31,7 +31,7 @@
     addUserFriend(req, res) {
         User.findOneAndUpdate(
             { _id: req.params.userId },
-            { $addToSet: { friends: req.body }},
+            { $addToSet: { friends: req.body.friends }},
             { runValidators: true, new: true }
         )
             .then((user) => 
@@ -40,6 +40,18 @@
             : res.json(user)
             )
             .catch((err) => res.status(500).json(err))
+    },
+    // delete single user by id
+    deleteSingleUser(req, res) {
+        User.findByIdAndDelete(
+            { _id: req.params.userId }
+        )
+        .then((user) => 
+            !user
+            ? res.status(404).json({ message: 'No User Found With Id' })
+            : res.json({ message: 'User Deleted' })
+        )
+        .catch((err) => res.status(500).json(err))
     },
     // delete a user's friend 
     deleteUserFriend(req, res) {

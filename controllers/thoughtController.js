@@ -5,7 +5,7 @@ module.exports = {
 
     // get all thoughts
     getThoughts(req, res) {
-        Thought.findAll({})
+        Thought.find({})
         .then((thought) => res.json(thought))
         .catch((err) => res.status(500).json({ message: 'Nothing Found!' }))
     },
@@ -25,17 +25,7 @@ module.exports = {
     //create a new thought
     createThought(req, res) {
         Thought.create(req.body)
-            .then(({ _id }) => {
-                return User.findOneAndUpdate(
-                    { _id: req.params.UserId },
-                    { $push: { thoughts: _id }},
-                )
-            })
-            .then((thought) => 
-            !thought
-            ? res.status(404).json({ message: 'No Thought Found! '})
-            : res.json(thought)
-            )
+            .then((thought) => res.json(thought))
             .catch((err) => res.status(500).json(err));
     },
 

@@ -1,27 +1,4 @@
-const { Schema, Types } = require('mongoose');
-
-// thought schema
-const thoughtSchema = new Schema(
-    {
-        thoughtText: {
-            type: String,
-            required: true,
-            min: 1,
-            max: 280,
-
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-            get: value => value.toDateString(),
-        },
-        username: {
-            type: String,
-            required: true,
-        },
-        reactions: [reactionSchema],
-    }
-);
+const { Schema, Types, model } = require('mongoose');
 
 // reaction schema 
 const reactionSchema = new Schema(
@@ -44,7 +21,10 @@ const reactionSchema = new Schema(
         createdAt: {
             type: Date,
             default: Date.now,
-            get: value => value.toDateString(),
+            get: (date) => {
+                if(date) 
+                    return date.toISOString().split('T')[0];
+            },
         },
     },
     {
@@ -52,6 +32,29 @@ const reactionSchema = new Schema(
             getters: true,
         },
         id: false,
+    }
+);
+
+// thought schema
+const thoughtSchema = new Schema(
+    {
+        thoughtText: {
+            type: String,
+            required: true,
+            min: 1,
+            max: 280,
+
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+            get: value => value.toDateString(),
+        },
+        username: {
+            type: String,
+            required: true,
+        },
+        reactions: [reactionSchema],
     }
 );
 

@@ -14,4 +14,4 @@ db.once('open', () => {
     app.listen(port, () => {
         console.log(`Now listening at http://localhost:${port}`);
     });
-})
+});
